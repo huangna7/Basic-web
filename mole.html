@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Game</title>
+    <style>
+        .lubang {
+            width: 100px;
+            height: 100px;
+            background-color: #0a3f37;
+            border-radius: 50%;
+            border: 5px solid #294324;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .renjun {
+            width: 110px;
+            height: 110px;
+
+            background-image: url('./renjun.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 0.2s ease-in-out;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .renjun.show {
+            bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="shadow-lg flex justify-between p-3 items-baseline sticky top-0 backdrop-blur-sm">
+        <div class="ml-7">
+            <h1 class="font-bold text-yellow-500 text-end text-lg hover:rotate-180">Renclogy ˖𓂃.☘︎ ݁˖</h1>
+        </div>
+        <div class="mr-7">
+            <ul class="flex space-x-4 text-sm p-2 items-baseline">
+                <li><a href="final_nadya.html" class="hover:text-emerald-600">Home</a></li>
+                <li><a href="bmiandtemperature.html" class="hover:text-emerald-600">About</a></li>
+                <li><a href="mole.html" class="hover:text-emerald-600">Game</a></li>
+                <li>
+                    <button class="bg-yellow-400 text-yellow-700 rounded-sm h-6 w-10 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-500">List</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="flex justify-center">
+        <div class="bg-slate-900 w-100 mt-10 mb-10 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 p-3 rounded-xl shadow-emerald-500 shadow-2xl">
+            <h1 class="text-4xl font-extrabold text-emerald-500 text-center">
+                WHACK A RENJUN!
+            </h1>
+            <p class="text-center text-gray-400 text-lg mb-5 mt-5">
+                Hit the Renjun kiyowo to score points before time runs out!
+            </p>
+            <div class="flex justify-between font-bold text-white mb-5">
+                <div class="">
+                    Score: <span id="score">0</span>
+                </div>
+                <div>
+                    Time: <span id="time">30</span>
+                </div>
+            </div> 
+
+            <!-- game grid -->
+            <div id="game-grid" class="grid grid-cols-3 gap-4 w-full mx-auto"></div>
+            <!-- game status -->
+            <div id="game-status" class="mt-8 text-xl text-center font-bold text-yellow-300 mb-5"></div>
+
+            <button id="start" class="border bg-yellow-200 rounded-xl text-emerald-900 font-semibold px-2 py-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 w-full mb-5">
+                Start Game
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const gameGrid = document.getElementById('game-grid');
+        const scoreDisplay = document.getElementById('score');
+        const timeDisplay = document.getElementById('time');
+        const gameStatus = document.getElementById('game-status');
+        const start = document.getElementById('start');
+
+        let score = 0;
+        let time = 30;
+        let timer = null;
+        let popUpTimer = null;
+        let isGameRunning = false;
+
+        // create grid 
+        function createGameGrid() {
+            for(let i = 0; i < 9 ; i++){
+                const lubang =  document.createElement('div');
+                lubang.classList.add('lubang','reletive');  
+
+                const renjun =  document.createElement('div');
+                renjun.classList.add('renjun');
+
+                renjun.addEventListener('click', () => whackMole(renjun));
+
+                lubang.appendChild(renjun);
+                gameGrid.appendChild(lubang);
+
+            }
+        }
+
+        function whackMole(renjun) {
+            if(isGameRunning && renjun.classList.contains('show')){
+                score++;
+                scoreDisplay.textContent = score;
+                renjun.classList.remove('show');
+            }
+        }
+
+        function popUpMole() {
+            const renjuns = document.querySelectorAll('.renjun');
+            renjuns.forEach((renjun) => renjun.classList.remove('show'));
+
+            const randomRenjun = renjuns[Math.floor(Math.random()*renjuns.length)];
+            randomRenjun.classList.add('show');
+
+        }
+
+        function startGameTimer() {
+            timer = setInterval(() => {
+                time--;
+                timeDisplay.textContent = time;
+                if(time <= 0) endGame();
+
+            },1000);
+        }
+
+        function startPopUpTimer() {
+            popUpTimer = setInterval(popUpMole, 1000);
+        }
+
+        function resetGame() {
+            clearInterval(timer);
+            clearInterval(popUpTimer);
+            score = 0;
+            time = 30;
+            isGameRunning = false;
+            scoreDisplay.textContent = score;
+            timeDisplay.textContent = time;
+            gameStatus.textContent = '';
+
+            const renjuns = document.querySelectorAll('.renjun');
+            renjuns.forEach((renjun) => renjun.classList.remove('show'));
+        }
+
+        function startGame() {
+            if(!isGameRunning){
+                resetGame();
+                isGameRunning = true;
+                gameStatus.textContent = 'Ready...Go!';
+                start.textContent = 'Restart';
+                startGameTimer();
+                startPopUpTimer();
+            }
+            else{
+                endGame();
+            }
+        }
+
+        function endGame() {
+            isGameRunning = false;
+            clearInterval(timer);
+            clearInterval(popUpTimer);
+            gameStatus.textContent = `Game Over! Your final score: ${score}`;
+            start.textContent = 'Play Again ~'
+        }
+
+        start.addEventListener('click', startGame);
+        document.addEventListener('DOMContentLoaded',createGameGrid );
+    </script>
+</body>
+</html>
