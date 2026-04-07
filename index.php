@@ -13,9 +13,10 @@
         </div>
         <div class="mr-7">
             <ul class="flex space-x-4 text-sm p-2 items-baseline">
-                <li><a href="final_nadya.html" class="hover:text-emerald-600">Home</a></li>
+                <li><a href="index.php" class="hover:text-emerald-600">Home</a></li>
                 <li><a href="bmiandtemperature.html" class="hover:text-emerald-600">About</a></li>
                 <li><a href="mole.html" class="hover:text-emerald-600">Game</a></li>
+                <li><a href="contact.php" class="hover:text-emerald-600">Contact</a></li>
                 <li>
                     <button class="bg-yellow-400 text-yellow-700 rounded-sm h-6 w-10 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-500">List</button>
                 </li>
