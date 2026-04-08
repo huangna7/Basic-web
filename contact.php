@@ -1,3 +1,10 @@
+<?php
+    include 'connection.php';
+
+    $data = mysqli_query($conn, "SELECT * FROM tb_contact");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +60,7 @@
 
 
     <div>
-        
+
     </div>
 </body>
 </html>
