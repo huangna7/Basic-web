@@ -31,7 +31,7 @@
     <br>
 
     <div class="flex justify-center">
-        <form action="" method="POST" class="p-10 bg-emerald-100 rounded-xl w-100 mb-10 shadow-xl shadow-emerald-300">
+        <form action="proccess.php" method="POST" class="p-10 bg-emerald-100 rounded-xl w-100 mb-10 shadow-xl shadow-emerald-300">
             <label for="" class="text-md font-semibold">Username</label><br>
             <input type="text" name="username" placeholder="Your name.." class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500" required><br>
 
@@ -39,16 +39,21 @@
             <input type="email" name="email" placeholder="eg. you@example.com" class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500" required><br>
 
             <label for="" class="text-md font-semibold">Message</label><br>
-            <textarea name="pesan" placeholder="Write your messages.." class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500"></textarea>
+            <textarea name="message" placeholder="Write your messages.." class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500"></textarea>
 
             <br>
 
-            <button type="submit" class="p-2 w-full rounded-xl shadow-md bg-gradient-to-r from-yellow-300 to-emerald-300 focus:outline-offset-2 focus:outline-2 focus:outline-emerald-600 text-emerald-800 font-semibold">Submit</button>
+            <button type="submit" name="tambah" class="p-2 w-full rounded-xl shadow-md bg-gradient-to-r from-yellow-300 to-emerald-300 focus:outline-offset-2 focus:outline-2 focus:outline-emerald-600 text-emerald-800 font-semibold">Submit</button>
 
         </form>
-        <div class="w-100 h-100">
-            <img src="img/cute korean.png" alt="korean people">
+        <div class="w-100 h-90">
+            <img src="img/renjun.png" alt="people" class="w-58 h-100 animate-bounce [animation-duration:2s]">
         </div>
+    </div>
+
+
+    <div>
+        
     </div>
 </body>
 </html>
