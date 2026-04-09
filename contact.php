@@ -34,18 +34,18 @@
     </nav>
 
     <div class="bg-yellow-50 rounded-xl m-5 p-5 shadow-xl shadow-yellow-200">
-        <h2 class="text-4xl font-bold text-emerald-700 text-center my-5">Contact us</h2>
+        <h2 class="text-4xl font-bold text-emerald-700 text-center my-5">Drop your opini/experience ~</h2>
     </div>
 
     <br>
 
     <div class="flex justify-center">
-        <form action="proccess.php" method="POST" class="p-10 bg-emerald-100 rounded-xl w-100 mb-20 shadow-xl shadow-emerald-300">
+        <form action="proccess.php" method="POST" enctype="multipart/form-data" class="p-10 bg-emerald-100 rounded-xl w-100 mb-20 shadow-xl shadow-emerald-300">
             <label for="" class="text-md font-semibold">Username</label><br>
             <input type="text" name="username" placeholder="Your name.." class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500" required><br>
 
             <label for="" class="text-md font-semibold">Email Address</label><br>
-            <input type="email" name="email" placeholder="eg. you@example.com" class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500" required><br>
+            <input type="email" name="email" placeholder="eg. you@example.com" class="border-2 border-emerald-700 shadow-md anim rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500" required><br>
 
             <label for="" class="text-md font-semibold">Message</label><br>
             <textarea name="message" placeholder="Write your messages.." class="border-2 border-emerald-700 shadow-md rounded-xl px-2 py-1 w-full mb-3 hover:border-orange-500"></textarea>
@@ -56,38 +56,34 @@
 
         </form>
         <div class="w-100 h-100 mt-10">
-            <img src="img/renjun.png" alt="people" class="w-85 h-80 animate-bounce [animation-duration:3s]">
+            <img src="img/renjun.png" alt="people" class="w-68 h-85 animate-bounce [animation-duration:3s]">
         </div>
     </div>
 
 
-    <div class="flex justify-center">
-        <div class="border-2 rounded-xl h-auto overflow-hidden border-emerald-700 mb-10 shadow-xl shadow-orange-300">
-        <table class="bg-emerald-100 rounded-xl w-200">
-            <tr class="bg-yellow-200">
-                <th class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600">Name</th>
-                <th class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600">Email</th>
-                <th class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600">Messages</th>
-                <th class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600">Action</th>
-            </tr>
-            <?php 
-                // while looping untuk mengambil semua data dari database satu per satu
-                while ($row = mysqli_fetch_assoc($data)) : 
-            ?>
-            <tr class="hover:bg-yellow-100">
-                <td class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600"><?= $row['username']; ?></td>
-                <td class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600"><?= $row['email']; ?></td>
-                <td class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600"><?= $row['message']; ?></td>
-                <td class="px-4 py-2 border border-emerald-700 font-semibold text-orange-600">
-                    <div class="flex justify-center gap-3">
-                        <a href="edit.php?id=<?= $row['id']; ?>" class="text-emerald-700 hover:text-orange-600 cursor-pointer"><i class="ti ti-edit text-lg"></i></a>
-                        <a href="proccess.php?hapus=<?= $row['id']; ?>" onclick="return confirm ('Are you sure?')" class="text-red-700 hover:text-orange-600 cursor-pointer"><i class="ti ti-trash text-lg"></i></a>
-                    </div>
-                </td>
-            </tr>
-            <?php endwhile;  ?>
-        </table>
+    <h2 class="text-xl text-emerald-700 pl-50 font-bold pb-5">All Comment ✨</h2>
+    <div class="grid grid-cols-3 justify-center gap-10 mx-50">
+        <?php 
+            // while looping untuk mengambil semua data dari database satu per satu
+            while ($row = mysqli_fetch_assoc($data)) : 
+        ?>
+        <div class="hover:shadow-xl shadow-sm shadow-yellow-300 rounded-lg overflow-hidden mb-10 bg-yellow-50">
+                <div class="flex justify-between items-baseline mx-4">
+                    <h3 class="font-semibold mt-4 mb-1 text-lg"><?= $row['username']; ?></h3>
+
+                    <p class="text-xs font-semibold text-orange-400 mt-4 mb-1 bg-orange-200 py-0.5 px-1 w-auto text-center rounded-xl"><?= $row['email']; ?></p>
+                </div>
+
+                <p class="text-emerald-700 font-normal text-sm ml-4 bg-emerald-100 w-12 px-2 py-0.5 rounded-xl my-2">User</p>
+
+                <p class="text-sm m-4 mt-0 break-words whitespace-normal"><?= $row['message']; ?></p>
+
+                <div class="flex justify-center gap-3">
+                    <a href="edit.php?id=<?= $row['id']; ?>" class="text-emerald-700 hover:text-orange-600 cursor-pointer"><i class="ti ti-edit text-lg"></i></a>
+                    <a href="proccess.php?hapus=<?= $row['id']; ?>" onclick="return confirm ('Are you sure?')" class="text-red-700 hover:text-orange-600 cursor-pointer"><i class="ti ti-trash text-lg"></i></a>
+                </div>
         </div>
+        <?php endwhile;  ?>
     </div>
 </body>
 </html>
