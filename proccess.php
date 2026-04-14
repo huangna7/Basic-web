@@ -59,4 +59,52 @@
         header("Location: contact.php");
         
     }
+
+
+    //ADD ITEM
+    if (isset($_POST['add'])) {
+        $name = $_POST['name'];
+        $category = $_POST['category'];
+        $year = $_POST['year'];
+        $description = $_POST['description'];
+
+        // upload gambar
+        $image = $_FILES['image']['name'];
+        $tmp = $_FILES['image']['tmp_name'];
+
+        // folder simpan
+        $folder = "upload/";
+        move_uploaded_file($tmp, $folder . $image);
+
+        // simpan ke database
+        mysqli_query($conn, "INSERT INTO tb_culture (name, category, year, image, description) 
+        VALUES ('$name', '$category', '$year', '$image', '$description')");
+
+        // redirect balik
+        header("Location: index.php");
+    }
+
+    //DELETE ITEM
+    if (isset($_GET['hapus2'])) { // Kode ini dijalankan jika ada perintah hapus dari URL yg ada di halaman index.
+    
+        // Mengambil ID data yang ingin dihapus.
+        $id = $_GET['hapus2'];
+    
+        // ambil data dulu (buat ambil nama gambar)
+        $culture = mysqli_query($conn, "SELECT * FROM tb_culture WHERE id = $id");
+        $row = mysqli_fetch_assoc($culture);
+
+        // hapus file gambar dari folder
+        $image = $row['image'];
+        if (file_exists("upload/" . $image)) {
+            unlink("upload/" . $image);
+        }
+
+        // hapus data dari database
+        mysqli_query($conn, "DELETE FROM tb_culture WHERE id = $id");
+
+        // kembali ke index
+        header("Location: index.php");
+        
+    }
 ?>
