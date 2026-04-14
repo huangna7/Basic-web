@@ -1,9 +1,44 @@
+<?php
+    include 'connection.php';
+
+    $culture = mysqli_query($conn, "SELECT * FROM tb_culture");
+
+    $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+    $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+
+    $query = "SELECT * FROM tb_culture WHERE 1";
+
+    // SEARCH
+    if (!empty($search)) {
+        $query .= " AND (
+        LOWER(name) LIKE LOWER('%$search%') OR
+        LOWER(category) LIKE LOWER('%$search%') OR
+        CAST(year AS CHAR) LIKE '%$search%' OR
+        LOWER(description) LIKE LOWER('%$search%')
+        )";
+    }
+
+    // SORT
+    switch ($sort) {
+        case "year":
+        $query .= " ORDER BY year ASC";
+        break;
+
+        case "category":
+        $query .= " ORDER BY category ASC";
+        break;
+    }
+
+    $culture = mysqli_query($conn, $query);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <title>Korean Culture-renclogy</title>
 </head>
 <body>
@@ -33,21 +68,46 @@
         </p>
         <br>
 
-        <div class="mb-20 mt-3">
-            <input type="text" id="search" name="search" placeholder="Search for name of korean culture, category, or year" class="border border-solid rounded-lg border-neutral-300 w-110 px-2 py-2">
+        <form class="mb-20 mt-3" method="GET">
+            <input type="text" id="search" name="search" placeholder="Search for name of korean culture, category, or year" class="border border-solid rounded-lg border-neutral-300 w-110 px-2 py-2" value="<?= htmlspecialchars($search) ?>">
 
-            <select name="select" id="sort-select" class="border border-solid rounded-lg border-neutral-300 w-50 px-2 py-2 text-gray-500">
+            <select name="sort" id="sort-select" class="border border-solid rounded-lg border-neutral-300 w-50 px-2 py-2 text-gray-500" onchange="this.form.submit()">
                 <option value="sortby">Sort By</option>
-                <option value="category">Category</option>
-                <option value="year">Year of Emergence</option>
+                <option value="category" <?= (isset($_GET['sort']) && $_GET['sort']=="category") ? 'selected' : '' ?>>Category</option>
+                <option value="year" <?= (isset($_GET['sort']) && $_GET['sort']=="year") ? 'selected' : '' ?>>Year of Emergence</option>
             </select>
-        </div>
+
+            <a href="add.php" class="mx-5 bg-emerald-600 rounded-xl shadow-emerald-200 shadow-xl px-5 py-2 outline-2 outline-offset-2 outline-dashed outline-yellow-500 text-white font-semibold">Add 🪄</a>
+        </form>
     </header>
 
     <main class="justify-center">
         <h2 class="text-center font-bold text-3xl text-yellow-600">Main Culture 𐙚</h2>
 
         <div class="grid grid-cols-3 mt-10 mb-10 gap-5 mx-10" id="container-budaya">
+            <?php 
+                 // while looping untuk mengambil semua data dari database satu per satu
+                 while ($row = mysqli_fetch_assoc($culture)) : 
+            ?>
+            <div class="hover:shadow-xl shadow-sm rounded-lg overflow-hidden">
+                <img src="upload/<?= $row['image']; ?>" alt="image" class="w-full h-32 object-cover transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110">
+                <div class="flex justify-between items-baseline mx-4">
+                    <h3 class="font-semibold mt-4 mb-1 text-lg"><?= $row['name']; ?></h3>
+
+                    <p class="text-xs font-semibold text-orange-400 mt-4 mb-1 bg-orange-200 py-0.5 px-1 w-20 text-center rounded-xl"><?= $row['category']; ?></p>
+                </div>
+
+                <p class="text-emerald-700 font-normal text-sm ml-4 bg-emerald-100 w-12 px-2 py-0.5 rounded-xl my-2"><?= $row['year']; ?></p>
+
+                <p class="text-sm m-4 mt-0"><?= $row['description']; ?><br></p>
+
+                <div class="flex justify-center gap-3 text-orange-400">
+                    <!-- Tombol Delete -->
+                    <a href="proccess.php?hapus2=<?= $row['id']; ?>" onclick="return confirm('Yakin?')"  class="hover:text-red-500 cursor-pointer"><i class="ti ti-trash text-lg"></i></a>
+                </div>
+            </div>
+            <?php endwhile;  ?>
+            
             <!-- <div class="hover:shadow-xl shadow-sm rounded-lg overflow-hidden">
                 <img src="img/Learning.jpeg" alt="Korean alphabet" class="w-full h-32 object-cover transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110">
                 <div class="flex justify-between items-baseline mx-4">
@@ -181,6 +241,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
 </body>
 </html>
