@@ -107,4 +107,43 @@
         header("Location: index.php");
         
     }
+
+    //update main
+    if (isset($_POST['edit'])) {
+        $id = $_POST['id'];
+        $name = $_POST['name'];
+        $category = $_POST['category'];
+        $year = $_POST['year'];
+        $description = mysqli_real_escape_string($conn, $_POST['description']);
+        $old_image = $_POST['old_image'];
+
+        // cek upload gambar
+        if ($_FILES['image']['name'] != '') {
+
+            $new_image = time() . '_' . $_FILES['image']['name'];
+            $tmp = $_FILES['image']['tmp_name'];
+
+            move_uploaded_file($tmp, "upload/" . $new_image);
+
+            // hapus gambar lama
+            if (!empty($old_image) && file_exists("upload/" . $old_image)) {
+                unlink("upload/" . $old_image);
+            }
+
+        } else {
+            // pakai gambar lama
+            $new_image = $old_image;
+        }
+
+        mysqli_query($conn, "UPDATE tb_culture SET
+            name='$name',
+            category='$category',
+            year='$year',
+            image='$new_image',
+            description='$description'
+            WHERE id=$id
+        ");
+
+        header("Location: index.php");
+    }
 ?>
