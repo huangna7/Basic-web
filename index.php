@@ -102,6 +102,8 @@
                 <p class="text-sm m-4 mt-0"><?= $row['description']; ?><br></p>
 
                 <div class="flex justify-center gap-3 text-orange-400">
+                    <!-- Tombol Edit  -->
+                    <a href="edit_main.php?id=<?= $row['id']; ?>" class="text-emerald-700 hover:text-orange-600 cursor-pointer"><i class="ti ti-edit text-lg"></i></a>
                     <!-- Tombol Delete -->
                     <a href="proccess.php?hapus2=<?= $row['id']; ?>" onclick="return confirm('Yakin?')"  class="hover:text-red-500 cursor-pointer"><i class="ti ti-trash text-lg"></i></a>
                 </div>
