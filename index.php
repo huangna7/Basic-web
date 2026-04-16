@@ -1,12 +1,14 @@
 <?php
+    session_start();
     include 'connection.php';
 
-    $culture = mysqli_query($conn, "SELECT * FROM tb_culture");
+    $user_id = $_SESSION['user_id'] ?? 0;
+
+    $query = "SELECT * FROM tb_culture WHERE user_id = '$user_id'";
+    $culture = mysqli_query($conn, $query);
 
     $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
     $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-
-    $query = "SELECT * FROM tb_culture WHERE 1";
 
     // SEARCH
     if (!empty($search)) {
@@ -32,6 +34,12 @@
     $culture = mysqli_query($conn, $query);
 
 ?>
+<?php if (isset($_GET['login']) && $_GET['login'] == 'success'): ?>
+    <script>
+        alert("Login berhasil!");
+    </script>
+<?php endif; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,9 +60,24 @@
                 <li><a href="bmiandtemperature.html" class="hover:text-emerald-600">About</a></li>
                 <li><a href="mole.html" class="hover:text-emerald-600">Game</a></li>
                 <li><a href="contact.php" class="hover:text-emerald-600">Contact</a></li>
-                <li>
+                <?php if (isset($_SESSION['user_name'])): ?>
+                    <li class="text-emerald-700 font-semibold">
+                        🪄 Halo, <?= $_SESSION['user_name']; ?>
+                    </li>
+                    <li>
+                        <a href="logout.php" class="hover:outline-2 hover:outline-offset-2 hover:outline-dashed hover:outline-emerald-700 rounded-xl px-3 py-1 text-white font-semibold bg-yellow-500">
+                            Logout
+                        </a>
+                    </li>
+
+                <?php else: ?>
+                    <li><a href="login.php" class="hover:text-emerald-600 outline-2 outline-offset-2 outline-dashed outline-orange-400 rounded-xl hover:bg-yellow-100 px-2 py-1">Login</a></li>
+                    
+                <?php endif; ?>
+                
+                <!-- <li>
                     <button class="bg-yellow-400 text-yellow-700 rounded-sm h-6 w-10 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-yellow-500">List</button>
-                </li>
+                </li> -->
             </ul>
         </div>
     </nav>
