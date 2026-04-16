@@ -63,12 +63,14 @@
 
     //ADD ITEM
     if (isset($_POST['add'])) {
+        session_start();
+        include "connection.php";
+
         $name = $_POST['name'];
         $category = $_POST['category'];
         $year = $_POST['year'];
         $description = $_POST['description'];
 
-        // upload gambar
         $image = $_FILES['image']['name'];
         $tmp = $_FILES['image']['tmp_name'];
 
@@ -76,19 +78,24 @@
         $folder = "upload/";
         move_uploaded_file($tmp, $folder . $image);
 
-        // simpan ke database
-        mysqli_query($conn, "INSERT INTO tb_culture (name, category, year, image, description) 
-        VALUES ('$name', '$category', '$year', '$image', '$description')");
+        $user_id = $_SESSION['user_id']; 
 
-        // redirect balik
+        mysqli_query($conn, "INSERT INTO tb_culture 
+        (name, category, year, description, image, user_id)
+        VALUES 
+        ('$name', '$category', '$year', '$description', '$image', '$user_id')");
+
         header("Location: index.php");
     }
 
     //DELETE ITEM
     if (isset($_GET['hapus2'])) { // Kode ini dijalankan jika ada perintah hapus dari URL yg ada di halaman index.
-    
+        session_start();
+
         // Mengambil ID data yang ingin dihapus.
         $id = $_GET['hapus2'];
+
+        $user_id = $_SESSION['user_id'];
     
         // ambil data dulu (buat ambil nama gambar)
         $culture = mysqli_query($conn, "SELECT * FROM tb_culture WHERE id = $id");
@@ -101,7 +108,7 @@
         }
 
         // hapus data dari database
-        mysqli_query($conn, "DELETE FROM tb_culture WHERE id = $id");
+        mysqli_query($conn, "DELETE FROM tb_culture WHERE id = $id AND user_id='$user_id'");
 
         // kembali ke index
         header("Location: index.php");
@@ -110,7 +117,11 @@
 
     //update main
     if (isset($_POST['edit'])) {
+        session_start();
+
         $id = $_POST['id'];
+        $user_id = $_SESSION['user_id'];
+
         $name = $_POST['name'];
         $category = $_POST['category'];
         $year = $_POST['year'];
@@ -141,9 +152,45 @@
             year='$year',
             image='$new_image',
             description='$description'
-            WHERE id=$id
+            WHERE id=$id 
+            AND user_id='$user_id'
         ");
 
         header("Location: index.php");
+    }
+
+    if (isset($_POST['register'])) {
+        $user_name = $_POST['user_name'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+        // cek username
+        $cek = mysqli_query($conn, "SELECT * FROM tb_users WHERE user_name='$user_name'");
+
+        if (mysqli_num_rows($cek) > 0) {
+            echo "Username sudah digunakan!";
+        } else {
+            mysqli_query($conn, "INSERT INTO tb_users VALUES('', '$user_name', '$password')");
+            header("Location: login.php");
+        }
+    }
+
+    if (isset($_POST['login'])) {
+        session_start();
+        include "connection.php";
+
+        $user_name = $_POST['user_name'];
+        $password = $_POST['password'];
+
+        $data = mysqli_query($conn, "SELECT * FROM tb_users WHERE user_name='$user_name'");
+        $user = mysqli_fetch_assoc($data);
+
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];      
+            $_SESSION['user_name'] = $user['user_name'];
+
+            header("Location: index.php?login=success");
+        } else {
+            header("Location: login.php?error=gagal");
+        }
     }
 ?>
